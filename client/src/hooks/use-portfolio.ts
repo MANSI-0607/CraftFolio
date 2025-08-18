@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from './use-toast';
+import { useAuth } from './use-auth';
 
 interface ContactLink {
   platform: string;
@@ -42,6 +43,7 @@ interface About {
 }
 
 interface PortfolioData {
+  username: string;
   about: About;
   skills: string[];
   experience: Experience[];
@@ -51,10 +53,13 @@ interface PortfolioData {
   theme: string;
 }
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || '';
 
 export const usePortfolio = () => {
-  const [portfolioData, setPortfolioData] = useState<PortfolioData>({
+  const { user } = useAuth();
+  const [portfolioData, setPortfolioData] = useState<PortfolioData>(
+    {
+    username: user?.username || '',
     about: {
       name: '',
       title: '',
@@ -118,8 +123,18 @@ export const usePortfolio = () => {
       if (!token) {
         throw new Error('No authentication token');
       }
+      
+      if (!user?.username) {
+        throw new Error('User not loaded yet');
+      }
 
-      const portfolioToSave = data || portfolioData;
+      const portfolioToSave = {
+        ...(data || portfolioData),
+        username: user?.username || portfolioData.username
+      };
+      
+      console.log('Saving portfolio with username:', portfolioToSave.username);
+      console.log('User object:', user);
 
       const response = await fetch(`${API_BASE_URL}/portfolio`, {
         method: 'PUT',
@@ -145,7 +160,9 @@ export const usePortfolio = () => {
       console.error('Error saving portfolio:', error);
       toast({
         title: "Error saving portfolio",
-        description: "Please try again later.",
+        description: error.message === 'User not loaded yet' 
+          ? "Please wait a moment and try again." 
+          : "Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -189,6 +206,16 @@ export const usePortfolio = () => {
       )
     }));
   };
+
+  // Update username when user changes
+  useEffect(() => {
+    if (user?.username) {
+      setPortfolioData(prev => ({
+        ...prev,
+        username: user.username
+      }));
+    }
+  }, [user?.username]);
 
   // Load portfolio on mount
   useEffect(() => {

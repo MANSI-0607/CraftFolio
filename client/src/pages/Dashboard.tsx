@@ -21,11 +21,13 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { usePortfolioProgress } from "@/hooks/use-portfolio-progress";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { percentage, completedCount, totalCount, sections } = usePortfolioProgress();
+  const { toast } = useToast();
   
   const sectionConfig = [
     {
@@ -245,13 +247,25 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Your Portfolio URL</CardTitle>
                 <CardDescription>Share your portfolio with others</CardDescription>
               </CardHeader>
-                             <CardContent>
-                 <div className="p-3 bg-muted rounded-md mb-3">
-                   <p className="text-sm font-mono text-muted-foreground">
-                     craftfolio.com/{user?.username || 'your-username'}
-                   </p>
-                 </div>
-                <Button variant="outline" size="sm" className="w-full">
+              <CardContent>
+                <div className="p-3 bg-muted rounded-md mb-3">
+                  <p className="text-sm font-mono text-muted-foreground">
+                    {window.location.origin}/{user?.username || 'your-username'}
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => {
+                    const portfolioUrl = `${window.location.origin}/${user?.username}`;
+                    navigator.clipboard.writeText(portfolioUrl);
+                    toast({
+                      title: "Link copied!",
+                      description: "Portfolio URL copied to clipboard.",
+                    });
+                  }}
+                >
                   <Share2 className="mr-2 h-4 w-4" />
                   Copy Link
                 </Button>

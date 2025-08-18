@@ -63,7 +63,7 @@ Context:
 - Education: ${education.length > 0 ? education.join('; ') : 'No specific education mentioned'}
 
 Requirements:
-- Keep it between 100-150 words
+- Keep it between 50-100words
 - Write in third person
 - Focus on professional achievements and expertise
 - Make it engaging and memorable
@@ -91,11 +91,11 @@ Current bio:
 
 Requirements:
 - Maintain the same core information
+- Keep the tone same as the current bio
 - Improve writing style and flow
 - Use stronger action verbs
 - Make it more engaging and memorable
 - Keep it professional and clean
-- Write in third person
 - Focus on achievements and expertise
 
 Generate only the improved bio text, no additional formatting or explanations.`;

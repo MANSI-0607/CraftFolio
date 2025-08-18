@@ -14,6 +14,7 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    username: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -21,7 +22,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-
+  const API_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || '';
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -54,15 +55,17 @@ const Signup = () => {
     
     try {
     
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: formData.name,
+          name: formData.name,
+          username:formData.username,
           email: formData.email,
           password: formData.password,
+
         }),
       });
 
@@ -126,6 +129,33 @@ const Signup = () => {
                     className="h-11 pl-10"
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="Enter your unique username"
+                    value={formData.username}
+                    onChange={e => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, "");
+                      setFormData({
+                        ...formData,
+                        username: value,
+                      });
+                    }}
+                    required
+                    className="h-11 pl-10"
+                    autoComplete="off"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Only letters, numbers, and underscores allowed. No spaces or special characters.
+                </p>
               </div>
               
               <div className="space-y-2">

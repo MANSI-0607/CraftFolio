@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import PortfolioBuilder from "./pages/PortfolioBuilder";
 import PortfolioViewer from "./pages/PortfolioViewer";
+import PublicPortfolio from "./pages/PublicPortfolio";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -39,6 +40,8 @@ const App = () => (
               <PortfolioViewer />
             </ProtectedRoute>
           } />
+          {/* Public portfolio route - no authentication required */}
+          <Route path="/:username" element={<PublicPortfolio />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

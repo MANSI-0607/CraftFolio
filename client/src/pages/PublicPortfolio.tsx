@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowLeft, 
   Mail, 
   MapPin, 
   Phone, 
@@ -19,7 +18,7 @@ import {
   Globe,
   ChevronDown
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface ContactLink {
   platform: string;
@@ -130,7 +129,8 @@ const themes = {
   }
 };
 
-const PortfolioViewer = () => {
+const PublicPortfolio = () => {
+  const { username } = useParams<{ username: string }>();
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('about');
@@ -140,7 +140,7 @@ const PortfolioViewer = () => {
   const [lastName, setLastName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactMessage, setContactMessage] = useState("");
-  
+
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
@@ -156,14 +156,10 @@ const PortfolioViewer = () => {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token');
-        }
-
-        const response = await fetch(`${API_BASE_URL}/portfolio`, {
+       
+        const response = await fetch(`${API_BASE_URL}/portfolio/public/${username}`, {
+          method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
@@ -173,6 +169,7 @@ const PortfolioViewer = () => {
         }
 
         const data = await response.json();
+      
         setPortfolioData(data);
       } catch (error) {
         console.error('Error fetching portfolio:', error);
@@ -181,8 +178,10 @@ const PortfolioViewer = () => {
       }
     };
 
-    fetchPortfolio();
-  }, []);
+    if (username) {
+      fetchPortfolio();
+    }
+  }, [username]);
 
   // Scroll spy effect
   useEffect(() => {
@@ -246,10 +245,7 @@ const PortfolioViewer = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Portfolio Not Found</h1>
-          <p className="text-gray-600 mb-4">No portfolio data available.</p>
-          <Link to="/portfolio-builder">
-            <Button>Create Portfolio</Button>
-          </Link>
+          <p className="text-gray-600 mb-4">This portfolio doesn't exist or is not public.</p>
         </div>
       </div>
     );
@@ -280,14 +276,6 @@ const PortfolioViewer = () => {
                   </button>
                 ))}
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/dashboard">
-                <Button variant="outline" size="sm" className="text-black border-white hover:bg-white hover:text-gray-500">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Dashboard
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -637,9 +625,26 @@ const PortfolioViewer = () => {
             </div>
           </div>
         </section>
+
+        {/* Made with CraftFolio Credit */}
+        <footer className="py-8 bg-white border-t border-gray-200">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-gray-500 text-sm">
+              Made with ❤️ using{' '}
+              <a 
+                href="https://craftfolio.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
+                CraftFolio
+              </a>
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
 };
 
-export default PortfolioViewer;
+export default PublicPortfolio;
