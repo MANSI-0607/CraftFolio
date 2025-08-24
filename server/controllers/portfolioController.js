@@ -92,7 +92,7 @@ const getPublicPortfolio = async (req, res) => {
   try {
     
     const portfolio = await Portfolio.findOne({username: req.params.username });
-   
+    console.log(portfolio)
     if (!portfolio) {
       return res.status(404).json({ message: 'Portfolio not found' });
     }

@@ -41,7 +41,7 @@ const App = () => (
             </ProtectedRoute>
           } />
           {/* Public portfolio route - no authentication required */}
-          <Route path="/:username" element={<PublicPortfolio />} />
+          <Route path="/portfolio/:username" element={<PublicPortfolio />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

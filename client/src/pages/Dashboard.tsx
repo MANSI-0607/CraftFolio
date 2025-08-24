@@ -250,7 +250,7 @@ const Dashboard = () => {
               <CardContent>
                 <div className="p-3 bg-muted rounded-md mb-3">
                   <p className="text-sm font-mono text-muted-foreground">
-                    {window.location.origin}/{user?.username || 'your-username'}
+                    {window.location.origin}/portfolio/{user?.username || 'your-username'}
                   </p>
                 </div>
                 <Button 
@@ -258,7 +258,7 @@ const Dashboard = () => {
                   size="sm" 
                   className="w-full"
                   onClick={() => {
-                    const portfolioUrl = `${window.location.origin}/${user?.username}`;
+                    const portfolioUrl = `${window.location.origin}/portfolio/${user?.username}`;
                     navigator.clipboard.writeText(portfolioUrl);
                     toast({
                       title: "Link copied!",
